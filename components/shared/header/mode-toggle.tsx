@@ -8,8 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuContent,
   DropdownMenuCheckboxItem,
-} from "../../dropdown-menu";
-import { Button } from "../../button";
+} from "../../ui/dropdown-menu";
+import { Button } from "../../ui/button";
 import { MoonIcon, SunIcon, SunMoon } from "lucide-react";
 import { useEffect, useState } from "react";
 
