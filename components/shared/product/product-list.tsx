@@ -1,7 +1,8 @@
+import { Product } from "@/types";
 import ProductCard from "./product-card";
 
 type Props = {
-  data: any;
+  data: Product[];
   title?: string;
   limit?: number;
 };
