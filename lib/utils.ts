@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ZodError } from "zod";
+import { Prisma } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -13,4 +15,28 @@ export function convertToPlainObject<T>(value: T): T {
 // Format number with decimal places
 export function formatNumberWithDecimal(num: number): string {
   return num.toFixed(2);
+}
+
+// Format errors
+export function formatError(
+  error: unknown | ZodError | Prisma.PrismaClientKnownRequestError
+) {
+  if (error instanceof ZodError) {
+    const fieldErrors = Object.keys(error.errors).map(
+      (idx) => error.errors[+idx].message
+    );
+
+    return fieldErrors.join(".\n");
+  } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2002") {
+      const field = Array.isArray(error.meta?.target)
+        ? (error.meta.target[0] as string)
+        : "Field";
+      return `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
+    }
+  }
+  const err = error as Error;
+  return typeof err.message === "string"
+    ? err.message
+    : JSON.stringify(err.message);
 }

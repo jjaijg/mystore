@@ -8,6 +8,7 @@ import {
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
+import { formatError } from "../utils";
 
 export async function signInWithCredentials(
   prevState: unknown,
@@ -23,7 +24,6 @@ export async function signInWithCredentials(
 
     return { success: true, message: "Signed in successfully" };
   } catch (error) {
-    console.log("error :>> ", error);
     if (isRedirectError(error)) throw error;
 
     return { success: false, message: "Invalid credentails" };
@@ -51,10 +51,8 @@ export async function signUpUser(prevState: unknown, formdata: FormData) {
 
     return { success: true, message: "User registered successfully" };
   } catch (error) {
-    console.log("error :>> ", error);
     if (isRedirectError(error)) throw error;
-
-    return { success: false, message: "User was no registered" };
+    return { success: false, message: formatError(error) };
   }
 }
 
