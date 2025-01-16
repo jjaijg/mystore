@@ -12,7 +12,7 @@ export const config = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma) as NextAuthConfig["adapter"],
   providers: [
     credentialsProvider({
       credentials: {
@@ -46,9 +46,28 @@ export const config = {
     }),
   ],
   callbacks: {
-    async session({ session, token, user, trigger }) {
-      if (token.sub) session.user.id = token.sub;
+    async jwt({ token, user }) {
+      if (!user) return token;
 
+      token.role = user.role as string;
+
+      if (user.name === "NO_NAME" && user.email) {
+        token.name = user.email.split("@")[0];
+        // update db to reflect name change
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { name: token.name },
+        });
+      }
+
+      return token;
+    },
+    async session({ session, token, user, trigger }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+        session.user.role = token.role as string;
+        session.user.name = token.name;
+      }
       if (trigger === "update") {
         session.user.name = user.name;
       }
