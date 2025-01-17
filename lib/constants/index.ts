@@ -11,9 +11,14 @@ export const LATEST_PRODUCTS_LIMIT =
   Number(process.env.LATEST_PRODUCTS_LIMIT) || 4;
 
 export const shippingDefault: ShippingAddress = {
-  fullName: "Jai Ganesh",
-  streetAddress: "C313 - KG HOC",
-  city: "Perumbakkam",
-  postalCode: "600126",
-  country: "India",
+  fullName: "",
+  streetAddress: "",
+  city: "",
+  postalCode: "",
+  country: "",
+  // fullName: "Jai Ganesh",
+  // streetAddress: "address",
+  // city: "city",
+  // postalCode: "pincode",
+  // country: "India",
 };
