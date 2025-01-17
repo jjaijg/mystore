@@ -40,3 +40,12 @@ export function formatError(
     ? err.message
     : JSON.stringify(err.message);
 }
+
+// Round number to 2 decimal places
+export function round2(value: number | string) {
+  if (!isNaN(Number(value))) {
+    return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+  } else {
+    throw new Error("Value is not a number or string");
+  }
+}
