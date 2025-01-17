@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,8 +12,10 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.action";
+import { formatCurrency } from "@/lib/utils";
 import { Cart, CartItem } from "@/types";
 import {
+  ArrowRight,
   // ArrowRight,
   Loader,
   Minus,
@@ -27,8 +30,7 @@ type Props = {
   cart: Cart | null | undefined;
 };
 const CartTable = ({ cart }: Props) => {
-  //   const router =
-  useRouter();
+  const router = useRouter();
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
 
@@ -55,6 +57,14 @@ const CartTable = ({ cart }: Props) => {
       return;
     });
   };
+
+  const handleCheckOut = () => {
+    startTransition(() => router.push("/shipping-address"));
+  };
+
+  const subTotal = cart
+    ? cart.items.reduce((acc, cur) => acc + cur.quantity, 0)
+    : 0;
 
   return (
     <>
@@ -125,6 +135,29 @@ const CartTable = ({ cart }: Props) => {
               </TableBody>
             </Table>
           </div>
+
+          <Card>
+            <CardContent className="p-4 gap-4">
+              <div className="pb-3 text-xl">
+                Subtotal ({subTotal}):
+                <span className="font-bold">
+                  {formatCurrency(cart.itemsPrice)}
+                </span>
+              </div>
+              <Button
+                className="w-full"
+                disabled={isPending}
+                onClick={handleCheckOut}
+              >
+                {isPending ? (
+                  <Loader className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRight className="w-4 h-4" />
+                )}{" "}
+                Proceed to Checkout
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       )}
     </>
