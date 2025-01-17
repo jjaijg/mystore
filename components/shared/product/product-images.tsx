@@ -18,6 +18,7 @@ const ProductImages = ({ images }: Props) => {
         alt={`Product image`}
         width={1000}
         height={1000}
+        priority
         className="min-h-[300px] object-cover object-center"
       />
       <div className="flex">
@@ -30,7 +31,13 @@ const ProductImages = ({ images }: Props) => {
               currentImgId === idx && "border-orange-500"
             )}
           >
-            <Image src={img} alt="Product image" width={100} height={100} />
+            <Image
+              src={img}
+              alt="Product image"
+              width={100}
+              height={100}
+              priority
+            />
           </div>
         ))}
       </div>
