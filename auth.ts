@@ -4,6 +4,7 @@ import credentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./db/prisma";
 import { NextResponse } from "next/server";
 import { compare } from "./lib/encrypt";
+import { cookies } from "next/headers";
 
 export const config = {
   pages: {
@@ -48,9 +49,9 @@ export const config = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (!user) return token;
-
+      token.id = user.id;
       token.role = user.role as string;
 
       if (user.name === "NO_NAME" && user.email) {
@@ -60,6 +61,34 @@ export const config = {
           where: { id: user.id },
           data: { name: token.name },
         });
+      }
+
+      if (trigger === "signIn" || trigger === "signUp") {
+        const cookiesObj = await cookies();
+        const sessionCartId = cookiesObj.get("sessionCartId")?.value;
+
+        if (sessionCartId) {
+          const sessionCart = await prisma.cart.findFirst({
+            where: { sessionCartId },
+          });
+
+          if (sessionCart) {
+            // delete current user cart
+            await prisma.cart.deleteMany({
+              where: {
+                userId: user.id,
+              },
+            });
+
+            // Assign new cart
+            await prisma.cart.update({
+              where: { id: sessionCart.id },
+              data: {
+                userId: user.id,
+              },
+            });
+          }
+        }
       }
 
       return token;
