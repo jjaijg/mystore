@@ -24,12 +24,14 @@ async function main() {
 
   const users: UserData = [];
 
-  sampleData.users.forEach(async (u) => {
+  for (let i = 0; i < sampleData.users.length; i++) {
+    const password = await hash(sampleData.users[i].password);
     users.push({
-      ...u,
-      password: await hash(u.password),
+      ...sampleData.users[i],
+      password,
     });
-  });
+  }
+
   await prisma.user.createMany({
     data: users,
   });
