@@ -6,11 +6,11 @@ import {
   signUpFormSchema,
 } from "../validationSchema/user.schema";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 import { ShippingAddress } from "@/types";
 import { shippingAddressSchema } from "../validationSchema/shippingAddress.schema";
+import { hash } from "../encrypt";
 
 export async function signInWithCredentials(
   prevState: unknown,
@@ -40,7 +40,7 @@ export async function signUpUser(prevState: unknown, formdata: FormData) {
       password: formdata.get("password"),
       confirmPassword: formdata.get("confirmPassword"),
     });
-    user.password = hashSync(user.password, 10);
+    user.password = await hash(user.password);
 
     await prisma.user.create({
       data: user,
