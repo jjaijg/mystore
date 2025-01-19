@@ -8,9 +8,10 @@ import {
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
-import { ShippingAddress } from "@/types";
+import { PaymentMethod, ShippingAddress } from "@/types";
 import { shippingAddressSchema } from "../validationSchema/shippingAddress.schema";
 import { hash } from "../encrypt";
+import { paymentMethodSchema } from "../validationSchema/payment.schema";
 
 export async function signInWithCredentials(
   prevState: unknown,
@@ -89,6 +90,29 @@ export async function updateUserAddress(data: ShippingAddress) {
 
     return { success: true, message: "User address updated successfully" };
   } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function updateUserPaymentMethod(data: PaymentMethod) {
+  try {
+    const session = await auth();
+    const currentUser = await prisma.user.findFirst({
+      where: { id: session?.user.id },
+    });
+
+    if (!currentUser) throw new Error("User not found");
+
+    console.log(data);
+    const paymentMethod = paymentMethodSchema.parse(data);
+    await prisma.user.update({
+      where: { id: currentUser.id },
+      data: { paymentMethod: paymentMethod.type },
+    });
+
+    return { success: true, message: "Payment method updated successfully." };
+  } catch (error) {
+    console.log(error);
     return { success: false, message: formatError(error) };
   }
 }
