@@ -62,3 +62,29 @@ export function formatCurrency(amount: number | string | null) {
 
   return CURRENCY_FORMATTER.format(Number(amount));
 }
+
+// shorten the unique id
+export function formatId(id: string) {
+  return `..${id.substring(id.length - 6)}`;
+}
+
+// format date & time
+export function formatDateTiem(dateString: string) {
+  const formattedDateTime: string = new Date(dateString).toLocaleString(
+    "en-IN"
+    // dateTimeOptions
+  );
+  const formattedDate: string = new Date(dateString).toLocaleString(
+    "en-IN"
+    // dateOptions
+  );
+  const formattedTime: string = new Date(dateString).toLocaleString(
+    "en-IN"
+    // timeOptions
+  );
+  return {
+    dateTime: formattedDateTime,
+    dateOnly: formattedDate,
+    timeOnly: formattedTime,
+  };
+}
