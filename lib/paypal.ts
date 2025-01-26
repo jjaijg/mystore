@@ -25,6 +25,8 @@ export const paypal = {
       }),
     });
 
+    console.log(resp);
+
     return handleResponse(resp);
   },
 
@@ -40,6 +42,8 @@ export const paypal = {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    console.log("Capture payment : ", resp);
 
     return handleResponse(resp);
   },

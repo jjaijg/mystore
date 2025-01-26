@@ -6,7 +6,10 @@ import {
   insertOrderItemSchema,
   insertOrderSchema,
 } from "@/lib/validationSchema/order.schema";
-import { paymentMethodSchema } from "@/lib/validationSchema/payment.schema";
+import {
+  paymentMethodSchema,
+  paymentResultSchema,
+} from "@/lib/validationSchema/payment.schema";
 import { insertProductSchema } from "@/lib/validationSchema/product.schema";
 import { shippingAddressSchema } from "@/lib/validationSchema/shippingAddress.schema";
 
@@ -24,6 +27,7 @@ export type CartItem = z.infer<typeof cartItemSchema>;
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
 
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
+export type PaymentResult = z.infer<typeof paymentResultSchema>;
 
 export type OrderItem = z.infer<typeof insertOrderItemSchema>;
 export type Order = z.infer<typeof insertOrderSchema> & {
