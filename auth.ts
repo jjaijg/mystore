@@ -49,7 +49,12 @@ export const config = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, session }) {
+      // handle session update
+      if (session?.user.name && trigger === "update") {
+        token.name = session.user.name;
+      }
+
       if (!user) return token;
       token.id = user.id;
       token.role = user.role as string;
