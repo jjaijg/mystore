@@ -20,3 +20,10 @@ export const signUpFormSchema = z
     message: " Passwords don't match",
     path: ["confirmPassword"],
   });
+
+// Schema for updateing user profile
+
+export const updateProfileSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  email: z.string().min(3, "Email must be at least 3 characters"),
+});
