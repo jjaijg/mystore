@@ -8,9 +8,7 @@ export const paymentMethodSchema = z
   })
   .refine(
     (data) => {
-      console.log(data.type, PAYMENT_METHODS);
-      return true;
-      // PAYMENT_METHODS.includes(data.type);
+      return PAYMENT_METHODS.includes(data.type);
     },
     {
       path: ["type"],
