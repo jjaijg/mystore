@@ -24,13 +24,16 @@ import {
   approvePaypalOrder,
 } from "@/lib/actions/order.actions";
 import { useToast } from "@/hooks/use-toast";
+import MarkAsPaidButton from "./MarkAsPaidButton";
+import MarkAsDeliveredButton from "./MarkAsDeliveredButton";
 
 type Props = {
   order: Order;
   paypalClientId: string;
+  isAdmin: boolean;
 };
 
-const OrderDetailsTable = ({ order, paypalClientId }: Props) => {
+const OrderDetailsTable = ({ order, paypalClientId, isAdmin }: Props) => {
   const { toast } = useToast();
   const {
     id,
@@ -197,6 +200,14 @@ const OrderDetailsTable = ({ order, paypalClientId }: Props) => {
                     />
                   </PayPalScriptProvider>
                 </div>
+              )}
+
+              {/* Cash on Delivery */}
+              {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
+                <MarkAsPaidButton orderId={id} />
+              )}
+              {isAdmin && isPaid && !isDelivered && (
+                <MarkAsDeliveredButton orderId={id} />
               )}
             </CardContent>
           </Card>
