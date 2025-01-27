@@ -69,6 +69,13 @@ export function formatId(id: string) {
   return `..${id.substring(id.length - 6)}`;
 }
 
+// Format number
+const NUMBER_FORMATTER = new Intl.NumberFormat("en-IN");
+
+export function formatNumber(number: number) {
+  return NUMBER_FORMATTER.format(number);
+}
+
 // format date & time
 export function formatDateTiem(dateString: string) {
   const formattedDateTime: string = new Date(dateString).toLocaleString(
