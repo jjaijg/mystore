@@ -60,8 +60,6 @@ export async function addItemToCart(item: CartItem) {
         ...calcPrice([cartItem]),
       });
 
-      console.log(newCart);
-
       //   Add to db
       await prisma.cart.create({
         data: newCart,

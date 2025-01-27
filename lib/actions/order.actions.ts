@@ -302,7 +302,6 @@ export async function getOrderSummary() {
   from "Order" group by to_char("createdAt", 'MM/YY')
   `;
 
-  console.log({ salesDataRaw });
   const monthlySales: SalesDataType[] = salesDataRaw.map((data) => ({
     ...data,
     totalSales: Number(data.totalSales),

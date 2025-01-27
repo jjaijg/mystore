@@ -34,7 +34,6 @@ const ShippingAddressForm = ({ address }: Props) => {
   });
 
   const onSubmit = async (data: ShippingAddress) => {
-    console.log({ data });
     startTransition(async () => {
       const res = await updateUserAddress(data);
 
