@@ -42,7 +42,7 @@ const AdminProductsPage = async ({ searchParams }: Props) => {
     <>
       <div className="space-y-2">
         <div className="flex-between">
-          <div className="h2-bold">Products</div>
+          <h2 className="h2-bold">Products</h2>
           <Button asChild>
             <Link href={`/admin/products/create`}>Create Product</Link>
           </Button>
