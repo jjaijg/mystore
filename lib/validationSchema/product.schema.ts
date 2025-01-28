@@ -14,3 +14,8 @@ export const insertProductSchema = z.object({
   banner: z.string().nullable(),
   price: currencyValidation,
 });
+
+// update product schema
+export const updateProductSchema = insertProductSchema.extend({
+  id: z.string().min(1, "Id is required"),
+});

@@ -31,3 +31,18 @@ export const shippingDefault: ShippingAddress = {
   // postalCode: "pincode",
   // country: "India",
 };
+
+export const productDefaults = {
+  name: "",
+  slug: "",
+  category: "",
+  images: [],
+  brand: "",
+  description: "",
+  price: "0",
+  stock: 0,
+  rating: "0",
+  numReviews: "0",
+  isFeatured: false,
+  banner: null,
+};
