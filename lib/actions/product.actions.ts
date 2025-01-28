@@ -9,6 +9,7 @@ import {
   updateProductSchema,
 } from "../validationSchema/product.schema";
 import { UTApi } from "uploadthing/server";
+import { Prisma } from "@prisma/client";
 
 // Get latest products
 export async function getLatestProducts() {
@@ -42,8 +43,8 @@ export async function getProductById(id: string) {
 
 // Get all products
 export async function getAllProducts({
-  // query,
-  // category,
+  query,
+  category,
   limit = PAGE_SIZE,
   page,
 }: {
@@ -52,13 +53,29 @@ export async function getAllProducts({
   page: number;
   category?: string;
 }) {
+  const queryFilter: Prisma.ProductWhereInput =
+    query !== "all"
+      ? {
+          name: { contains: query, mode: Prisma.QueryMode.insensitive },
+        }
+      : {};
+  const categoryFilter: Prisma.ProductWhereInput =
+    category !== "all"
+      ? {
+          category: { contains: category, mode: Prisma.QueryMode.insensitive },
+        }
+      : {};
   const data = await prisma.product.findMany({
+    where: { ...queryFilter, ...categoryFilter },
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,
   });
-  const dataCount = await prisma.product.count();
+  const dataCount = await prisma.product.count({
+    where: { ...queryFilter, ...categoryFilter },
+  });
 
+  console.log(data.length, dataCount);
   return {
     data,
     totalPages: Math.ceil(dataCount / limit),

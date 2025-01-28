@@ -16,6 +16,7 @@ import { paymentMethodSchema } from "../validationSchema/payment.schema";
 import { PAGE_SIZE } from "../constants";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 export async function signInWithCredentials(
   prevState: unknown,
@@ -147,17 +148,22 @@ export async function updateProfile(user: { name: string; email: string }) {
 export async function getAllUsers({
   limit = PAGE_SIZE,
   page,
+  query,
 }: {
   limit?: number;
   page: number;
   query: string;
 }) {
+  const filter: Prisma.UserWhereInput = {
+    name: { contains: query, mode: "insensitive" },
+  };
   const data = await prisma.user.findMany({
+    where: filter,
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,
   });
-  const dataCount = await prisma.user.count();
+  const dataCount = await prisma.user.count({ where: filter });
 
   return {
     data,

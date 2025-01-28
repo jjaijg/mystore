@@ -21,27 +21,42 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  searchParams: Promise<{ page: string }>;
+  searchParams: Promise<{ page: string; query: string }>;
 };
 const AdminOrdersPage = async ({ searchParams }: Props) => {
-  const { page = "1" } = await searchParams;
+  const searchData = await searchParams;
+  const page = searchData.page || 1;
+  const searchText = searchData.query || "";
 
   const session = await auth();
 
   if (session?.user.role !== "admin") throw new Error("User is not authorized");
 
-  const orders = await getAllOrders({ page: Number(page) });
+  const orders = await getAllOrders({ page: Number(page), query: searchText });
 
   return (
     <>
       <div className="space-y-2">
-        <h2 className="h2-bold">Orders</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="h2-bold">Orders</h2>
+          {searchText && (
+            <div>
+              Filtered by <i>&quot;{searchText}&quot;</i>
+              <Link href={`/admin/orders`}>
+                <Button variant={"outline"} size={"sm"} className="ml-2">
+                  Remove Filter
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
                 <TableHead>DATE</TableHead>
+                <TableHead>BUYER</TableHead>
                 <TableHead>TOTAL</TableHead>
                 <TableHead>PAID</TableHead>
                 <TableHead>DELIVERED</TableHead>
@@ -55,6 +70,7 @@ const AdminOrdersPage = async ({ searchParams }: Props) => {
                   <TableCell>
                     {formatDateTiem(order.createdAt.toString()).dateTime}
                   </TableCell>
+                  <TableCell>{order.user.name}</TableCell>
                   <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                   <TableCell>
                     {order.isPaid ? (

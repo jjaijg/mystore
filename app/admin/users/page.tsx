@@ -43,7 +43,19 @@ const AdminUsersPage = async ({ searchParams }: Props) => {
   return (
     <>
       <div className="space-y-2">
-        <h2 className="h2-bold">Users</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="h2-bold">Users</h2>
+          {searchText && (
+            <div>
+              Filtered by <i>&quot;{searchText}&quot;</i>
+              <Link href={`/admin/users`}>
+                <Button variant={"outline"} size={"sm"} className="ml-2">
+                  Remove Filter
+                </Button>
+              </Link>
+            </div>
+          )}
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
