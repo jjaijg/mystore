@@ -2,9 +2,9 @@ import NextAuth, { NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import credentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "./db/prisma";
-import { NextResponse } from "next/server";
 import { compare } from "./lib/encrypt";
 import { cookies } from "next/headers";
+import { authConfig } from "./auth.config";
 
 export const config = {
   pages: {
@@ -49,6 +49,7 @@ export const config = {
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user, trigger, session }) {
       // handle session update
       if (session?.user.name && trigger === "update") {
@@ -108,46 +109,6 @@ export const config = {
         session.user.name = user.name;
       }
       return session;
-    },
-    async authorized({ request, auth }) {
-      // Array of regex of paths to protect
-      const protectedPaths = [
-        /\/shipping-address/,
-        /\/payment-method/,
-        /\/place-order/,
-        /\/profile/,
-        /\/user\/(.*)/,
-        /\/order\/(.*)/,
-        /\/admin/,
-      ];
-
-      // Get pathname from the req url object
-      const { pathname } = request.nextUrl;
-
-      // check if user is not authenicated & accessing a protected route
-      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
-
-      // Check for cart session cookie
-      if (!request.cookies.get("sessionCartId")) {
-        // Generate new session cartId cookie
-        const sessionCartId = crypto.randomUUID();
-
-        // clone request headers
-        const newReqHeaders = new Headers(request.headers);
-
-        // create new response and add new headers
-        const response = NextResponse.next({
-          request: {
-            headers: newReqHeaders,
-          },
-        });
-
-        // set newly generated sessionCartId in the response cookies
-        response.cookies.set("sessionCartId", sessionCartId);
-        return response;
-      } else {
-        return true;
-      }
     },
   },
 } satisfies NextAuthConfig;
