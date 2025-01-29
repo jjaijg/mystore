@@ -75,7 +75,6 @@ export async function getAllProducts({
     where: { ...queryFilter, ...categoryFilter },
   });
 
-  console.log(data.length, dataCount);
   return {
     data,
     totalPages: Math.ceil(dataCount / limit),
