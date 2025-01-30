@@ -67,7 +67,7 @@ const AdminOverviewPage = async () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(usersCount || 0)}
+                {formatNumber(usersCount || 0)}
               </div>
             </CardContent>
           </Card>
@@ -78,7 +78,7 @@ const AdminOverviewPage = async () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {formatCurrency(productsCount || 0)}
+                {formatNumber(productsCount || 0)}
               </div>
             </CardContent>
           </Card>
