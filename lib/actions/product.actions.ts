@@ -47,32 +47,72 @@ export async function getAllProducts({
   category,
   limit = PAGE_SIZE,
   page,
+  price,
+  rating,
+  sort,
 }: {
   query: string;
   limit?: number;
   page: number;
   category?: string;
+  price?: string;
+  sort?: string;
+  rating?: string;
 }) {
   const queryFilter: Prisma.ProductWhereInput =
-    query !== "all"
+    query && query !== "all"
       ? {
           name: { contains: query, mode: Prisma.QueryMode.insensitive },
         }
       : {};
   const categoryFilter: Prisma.ProductWhereInput =
-    category !== "all"
+    category && category !== "all"
       ? {
           category: { contains: category, mode: Prisma.QueryMode.insensitive },
         }
       : {};
+  const priceFilter: Prisma.ProductWhereInput =
+    price && price !== "all"
+      ? {
+          price: {
+            gte: Number(price.split("-")[0]),
+            lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+  const ratingFilter: Prisma.ProductWhereInput =
+    rating && rating !== "all"
+      ? {
+          rating: {
+            gte: Number(rating),
+          },
+        }
+      : {};
   const data = await prisma.product.findMany({
-    where: { ...queryFilter, ...categoryFilter },
-    orderBy: { createdAt: "desc" },
+    where: {
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    },
+    orderBy:
+      sort === "lowest"
+        ? { price: "asc" }
+        : sort === "highest"
+        ? { price: "desc" }
+        : sort === "rating"
+        ? { rating: "desc" }
+        : { createdAt: "desc" },
     take: limit,
     skip: (page - 1) * limit,
   });
   const dataCount = await prisma.product.count({
-    where: { ...queryFilter, ...categoryFilter },
+    where: {
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
+    },
   });
 
   return {
@@ -149,6 +189,27 @@ export async function updateProduct(data: UpdateProduct) {
   }
 }
 
+// Get featured products
+export async function getFeaturedProducts() {
+  const data = await prisma.product.findMany({
+    where: { isFeatured: true },
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
+
+  return convertToPlainObject(data);
+}
+
+// Category
+// Get all categories
+export async function getAllCategories() {
+  return await prisma.product.groupBy({
+    by: "category",
+    _count: true,
+  });
+}
+
+// Utils
 export async function deleteImages(imgIds: string[]) {
   const utapi = new UTApi();
 
