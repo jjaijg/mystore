@@ -14,6 +14,7 @@ import {
   insertProductSchema,
   updateProductSchema,
 } from "@/lib/validationSchema/product.schema";
+import { insertReviewSchema } from "@/lib/validationSchema/review.schema";
 import { shippingAddressSchema } from "@/lib/validationSchema/shippingAddress.schema";
 
 import { z } from "zod";
@@ -21,6 +22,7 @@ import { z } from "zod";
 export type Product = z.infer<typeof insertProductSchema> & {
   id: string;
   rating: string;
+  numReviews: number;
   createdAt: Date;
 };
 
@@ -49,4 +51,10 @@ export type Order = z.infer<typeof insertOrderSchema> & {
 export type SalesDataType = {
   month: string;
   totalSales: number;
+};
+
+export type Review = z.infer<typeof insertReviewSchema> & {
+  id: string;
+  createdAt: Date;
+  user?: { name: string };
 };
