@@ -26,14 +26,21 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import MarkAsPaidButton from "./MarkAsPaidButton";
 import MarkAsDeliveredButton from "./MarkAsDeliveredButton";
+import StripePayment from "./stripe-payment";
 
 type Props = {
   order: Order;
   paypalClientId: string;
+  stripeClientSecret: string | null;
   isAdmin: boolean;
 };
 
-const OrderDetailsTable = ({ order, paypalClientId, isAdmin }: Props) => {
+const OrderDetailsTable = ({
+  order,
+  paypalClientId,
+  isAdmin,
+  stripeClientSecret,
+}: Props) => {
   const { toast } = useToast();
   const {
     id,
@@ -200,6 +207,15 @@ const OrderDetailsTable = ({ order, paypalClientId, isAdmin }: Props) => {
                     />
                   </PayPalScriptProvider>
                 </div>
+              )}
+
+              {/* Stripe payment */}
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={+order.totalPrice * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
               )}
 
               {/* Cash on Delivery */}
