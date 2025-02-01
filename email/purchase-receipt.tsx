@@ -2,7 +2,7 @@
 require("dotenv").config();
 
 import sampleData from "@/db/sample-data";
-import { formatCurrency } from "@/lib/utils";
+import { dateFormatter, formatCurrency } from "@/lib/utils";
 import { Order } from "@/types";
 import {
   Body,
@@ -67,8 +67,6 @@ const myOrder = {
 PurchaseReceiptEmail.previewProps = {
   order: myOrder,
 } satisfies Props;
-
-const dateFormatter = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
 
 export default function PurchaseReceiptEmail({ order }: Props) {
   return (

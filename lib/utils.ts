@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
 import qs from "query-string";
+import { TIME_ZONE } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -77,19 +78,26 @@ export function formatNumber(number: number) {
 }
 
 // format date & time
+export const dateTimeFormatter = new Intl.DateTimeFormat("en-IN", {
+  timeZone: TIME_ZONE,
+  timeStyle: "medium",
+  dateStyle: "medium",
+});
+export const dateFormatter = new Intl.DateTimeFormat("en-IN", {
+  timeZone: TIME_ZONE,
+  dateStyle: "medium",
+});
+export const timeFormatter = new Intl.DateTimeFormat("en-IN", {
+  timeZone: TIME_ZONE,
+  timeStyle: "medium",
+});
 export function formatDateTiem(dateString: Date | string) {
-  const formattedDateTime: string = new Date(dateString).toLocaleString(
-    "en-IN"
-    // dateTimeOptions
+  const formattedDateTime: string = dateTimeFormatter.format(
+    new Date(dateString)
   );
-  const formattedDate: string = new Date(dateString).toLocaleString(
-    "en-IN"
-    // dateOptions
-  );
-  const formattedTime: string = new Date(dateString).toLocaleString(
-    "en-IN"
-    // timeOptions
-  );
+  const formattedDate: string = dateFormatter.format(new Date(dateString));
+  const formattedTime: string = timeFormatter.format(new Date(dateString));
+
   return {
     dateTime: formattedDateTime,
     dateOnly: formattedDate,
