@@ -8,10 +8,11 @@ import { getUserById } from "./user.actions";
 import { insertOrderSchema } from "../validationSchema/order.schema";
 import { prisma } from "@/db/prisma";
 import { paypal } from "../paypal";
-import { PaymentResult, SalesDataType } from "@/types";
+import { PaymentResult, SalesDataType, ShippingAddress } from "@/types";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
 import { Prisma } from "@prisma/client";
+import { sendPurchaseReceipt } from "@/email";
 
 // create order & order items
 
@@ -251,6 +252,14 @@ export async function updateOrderToPaid({
   });
 
   if (!updatedOrder) throw new Error("Order not found");
+
+  sendPurchaseReceipt({
+    order: {
+      ...updatedOrder,
+      shippingAddress: updatedOrder.shippingAddress as ShippingAddress,
+      paymentResult: updatedOrder.paymentResult as PaymentResult,
+    },
+  });
 }
 
 // get user orders

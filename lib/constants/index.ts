@@ -19,6 +19,8 @@ export const DEFAULT_PAYMENT_METHOD =
 
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 2;
 
+export const SENDER_EMAIL = process.env.SENDER_EMAIL || "onboarding@resend.dev";
+
 export const shippingDefault: ShippingAddress = {
   fullName: "",
   streetAddress: "",
