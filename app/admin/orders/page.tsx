@@ -68,20 +68,20 @@ const AdminOrdersPage = async ({ searchParams }: Props) => {
                 <TableRow key={order.id}>
                   <TableCell>{formatId(order.id)}</TableCell>
                   <TableCell>
-                    {formatDateTiem(order.createdAt.toString()).dateTime}
+                    {formatDateTiem(order.createdAt).dateTime}
                   </TableCell>
                   <TableCell>{order.user.name}</TableCell>
                   <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                   <TableCell>
                     {order.isPaid ? (
-                      formatDateTiem(order.paidAt!.toString()).dateTime
+                      formatDateTiem(order.paidAt!).dateTime
                     ) : (
                       <Badge variant={"destructive"}>Not Paid</Badge>
                     )}
                   </TableCell>
                   <TableCell>
                     {order.isDelivered ? (
-                      formatDateTiem(order.deliveredAt!.toString()).dateTime
+                      formatDateTiem(order.deliveredAt!).dateTime
                     ) : (
                       <Badge variant={"destructive"}>Not delivered</Badge>
                     )}

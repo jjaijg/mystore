@@ -77,7 +77,7 @@ export function formatNumber(number: number) {
 }
 
 // format date & time
-export function formatDateTiem(dateString: string) {
+export function formatDateTiem(dateString: Date | string) {
   const formattedDateTime: string = new Date(dateString).toLocaleString(
     "en-IN"
     // dateTimeOptions

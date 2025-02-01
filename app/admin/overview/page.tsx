@@ -113,7 +113,7 @@ const AdminOverviewPage = async () => {
                         {order?.user?.name ?? "Deleted User"}
                       </TableCell>
                       <TableCell>
-                        {formatDateTiem(order.createdAt.toString()).dateOnly}
+                        {formatDateTiem(order.createdAt).dateOnly}
                       </TableCell>
                       <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                       <TableCell>

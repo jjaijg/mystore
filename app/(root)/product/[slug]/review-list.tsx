@@ -86,7 +86,7 @@ const ReviewList = ({ userId, productId, productSlug }: Props) => {
                   </div>
                   <div className="flex items-center">
                     <Calendar className="mr-1 h-3 w-3" />
-                    {formatDateTiem(rev.createdAt.toString()).dateTime}
+                    {formatDateTiem(rev.createdAt).dateTime}
                   </div>
                 </div>
               </CardContent>
