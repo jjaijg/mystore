@@ -71,7 +71,6 @@ PurchaseReceiptEmail.previewProps = {
 const dateFormatter = new Intl.DateTimeFormat("en", { dateStyle: "medium" });
 
 export default function PurchaseReceiptEmail({ order }: Props) {
-  console.log(order);
   return (
     <>
       <Html>
