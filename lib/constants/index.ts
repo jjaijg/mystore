@@ -39,9 +39,7 @@ export const shippingDefault: ShippingAddress = {
 export const productDefaults = {
   name: "",
   slug: "",
-  category: "",
   images: [],
-  brand: "",
   description: "",
   price: "0",
   stock: 0,
@@ -49,6 +47,7 @@ export const productDefaults = {
   numReviews: "0",
   isFeatured: false,
   banner: null,
+  discountPercent: 0,
 };
 
 export const reviewFormDefaults = {

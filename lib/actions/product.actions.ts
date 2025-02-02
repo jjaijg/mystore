@@ -45,6 +45,10 @@ export async function getProductById(id: string) {
     where: {
       id,
     },
+    include: {
+      category: { select: { name: true, slug: true } },
+      brand: { select: { name: true, slug: true } },
+    },
   });
 
   return convertToPlainObject(data);
@@ -155,8 +159,7 @@ export async function deleteProduct(id: string) {
 // Create a product
 export async function createProduct(data: InserProductSchema) {
   try {
-    const { category, brand, ...product } = insertProductSchema.parse(data);
-    console.log(category, brand);
+    const product = insertProductSchema.parse(data);
     await prisma.product.create({
       data: product,
     });
@@ -185,11 +188,9 @@ export async function updateProduct(data: UpdateProduct) {
       )
       .map((img) => img.split("/").pop()!); //gets image id
 
-    const { category, brand, ...productData } = product;
-    console.log(category, brand);
     await prisma.product.update({
       where: { id: product.id },
-      data: productData,
+      data: product,
     });
 
     // Remove images from uploadthing

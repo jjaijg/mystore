@@ -20,6 +20,7 @@ import { z } from "zod";
 export type TProduct = Omit<Product, "price" | "rating"> & {
   price: number;
   rating: number;
+  discountPercent: number;
   brand: {
     name: string;
   } | null;
@@ -63,8 +64,8 @@ export type Review = z.infer<typeof insertReviewSchema> & {
 };
 
 export type SearchParams = {
-  query: string;
-  page: number;
+  query?: string;
+  page?: number;
 };
 
 export type PaginatedResp<T> = {

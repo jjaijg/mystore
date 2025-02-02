@@ -6,7 +6,7 @@ import {
   insertProductSchema,
   updateProductSchema,
 } from "@/lib/validationSchema/product.schema";
-import { Product } from "@/types";
+import { TProduct } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -29,14 +29,31 @@ import Image from "next/image";
 import { UploadButton } from "@/lib/uploadthing";
 import { Checkbox } from "../ui/checkbox";
 import { Trash2Icon } from "lucide-react";
+import { Brand, Category } from "@prisma/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { useEffect } from "react";
 
 type Props = {
   type: "create" | "update";
   productId?: string;
-  product?: Product;
+  product?: TProduct;
+  categories: Category[];
+  brands: Brand[];
 };
 
-const ProductForm = ({ type, product, productId }: Props) => {
+const ProductForm = ({
+  type,
+  product,
+  productId,
+  categories,
+  brands,
+}: Props) => {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -44,7 +61,15 @@ const ProductForm = ({ type, product, productId }: Props) => {
     resolver: zodResolver(
       type === "update" ? updateProductSchema : insertProductSchema
     ),
-    defaultValues: product && type === "update" ? product : productDefaults,
+    defaultValues:
+      product && type === "update"
+        ? {
+            ...product,
+            categoryId: product.categoryId ?? undefined,
+            brandId: product.brandId ?? undefined,
+            price: product.price.toString(),
+          }
+        : productDefaults,
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof insertProductSchema>> = async (
@@ -76,9 +101,19 @@ const ProductForm = ({ type, product, productId }: Props) => {
     }
   };
 
-  const images = form.watch("images");
-  const isFeatured = form.watch("isFeatured");
-  const banner = form.watch("banner");
+  const { setValue, watch } = form;
+  const prodName = watch("name");
+  const images = watch("images");
+  const isFeatured = watch("isFeatured");
+  const banner = watch("banner");
+  const price = watch("price");
+  const discountPercent = watch("discountPercent");
+  const discountedPrice =
+    discountPercent > 0 ? +price - (+price * discountPercent) / 100 : 0;
+
+  useEffect(() => {
+    setValue("slug", slugify(prodName, { lower: true }));
+  }, [prodName, setValue]);
 
   return (
     <>
@@ -113,19 +148,6 @@ const ProductForm = ({ type, product, productId }: Props) => {
                   <FormControl>
                     <div className="relative">
                       <Input placeholder="Enter Product slug" {...field} />
-                      <Button
-                        type="button"
-                        className="bg-gray-500 hover:bg-gray-600 text-white
-                    px-4 py-1 mt-2"
-                        onClick={() => {
-                          form.setValue(
-                            "slug",
-                            slugify(form.getValues("name"), { lower: true })
-                          );
-                        }}
-                      >
-                        Generate
-                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -137,13 +159,24 @@ const ProductForm = ({ type, product, productId }: Props) => {
             {/* Category */}
             <FormField
               control={form.control}
-              name="category"
+              name="categoryId"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter Product Category" {...field} />
-                  </FormControl>
+                  <Select {...field} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>
+                          {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -151,13 +184,24 @@ const ProductForm = ({ type, product, productId }: Props) => {
             {/* Brand */}
             <FormField
               control={form.control}
-              name="brand"
+              name="brandId"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter Product Brand" {...field} />
-                  </FormControl>
+                  <Select {...field} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a brand" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {brands.map((b) => (
+                        <SelectItem key={b.id} value={b.id}>
+                          {b.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -193,6 +237,36 @@ const ProductForm = ({ type, product, productId }: Props) => {
               )}
             />
           </div>
+
+          <div className="flex flex-col gap-5 md:flex-row">
+            {/* Discount % */}
+            <FormField
+              control={form.control}
+              name="discountPercent"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Discount %</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Product discount" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* Discount price */}
+            <FormItem className="w-full">
+              <FormLabel>Discounted Price</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Discounted price"
+                  disabled
+                  value={discountedPrice}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </div>
+
           <div className="upload-field flex flex-col gap-5 md:flex-row">
             {/* Images */}
             <FormField

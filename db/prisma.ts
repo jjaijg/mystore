@@ -27,6 +27,11 @@ export const prisma = new PrismaClient({ adapter }).$extends({
           return product.rating.toNumber();
         },
       },
+      discountPercent: {
+        compute(product) {
+          return product.discountPercent?.toNumber();
+        },
+      },
     },
     cart: {
       itemsPrice: {
