@@ -67,6 +67,7 @@ const ProductForm = ({
             ...product,
             categoryId: product.categoryId ?? undefined,
             brandId: product.brandId ?? undefined,
+            discountPercent: product.discountPercent ?? undefined,
             price: product.price.toString(),
           }
         : productDefaults,
@@ -109,7 +110,9 @@ const ProductForm = ({
   const price = watch("price");
   const discountPercent = watch("discountPercent");
   const discountedPrice =
-    discountPercent > 0 ? +price - (+price * discountPercent) / 100 : 0;
+    discountPercent && discountPercent > 0
+      ? +price - (+price * discountPercent) / 100
+      : 0;
 
   useEffect(() => {
     setValue("slug", slugify(prodName, { lower: true }));
@@ -247,7 +250,11 @@ const ProductForm = ({
                 <FormItem className="w-full">
                   <FormLabel>Discount %</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter Product discount" {...field} />
+                    <Input
+                      placeholder="Enter Product discount"
+                      {...field}
+                      value={field.value ?? undefined}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
