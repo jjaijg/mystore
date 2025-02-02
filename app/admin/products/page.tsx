@@ -79,7 +79,7 @@ const AdminProductsPage = async ({ searchParams }: Props) => {
                 <TableCell className="text-right">
                   {formatCurrency(prod.price)}
                 </TableCell>
-                <TableCell>{prod.category}</TableCell>
+                <TableCell>{prod.categoryId}</TableCell>
                 <TableCell>{prod.stock}</TableCell>
                 <TableCell>{prod.rating}</TableCell>
                 <TableCell className="flex gap-1">
@@ -92,7 +92,7 @@ const AdminProductsPage = async ({ searchParams }: Props) => {
             ))}
           </TableBody>
         </Table>
-        {products.totalPages && products.totalPages > 1 && (
+        {products.totalPages > 0 && products.totalPages > 1 && (
           <Pagination page={page} totalPages={products.totalPages} />
         )}
       </div>

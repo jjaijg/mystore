@@ -58,3 +58,13 @@ export type Review = z.infer<typeof insertReviewSchema> & {
   createdAt: Date;
   user?: { name: string };
 };
+
+export type SearchParams = {
+  query: string;
+  page: number;
+};
+
+export type PaginatedResp<T> = {
+  data: T[];
+  totalPages: number;
+};
