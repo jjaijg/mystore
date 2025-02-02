@@ -1,0 +1,90 @@
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique(map: "brand_slug_idx")
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  Product Product[]
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique(map: "category_slug_idx")
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @db.Timestamp(6)
+
+  Product Product[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique(map: "product_slug_idx")
+  description String
+  categoryId  String?
+  brandId     String?
+  images      String[]
+  stock       Int
+  price       Decimal  @default(0) @db.Decimal(12, 2)
+  totalSold   Int      @default(0)
+  status      Status   @default(ACTIVE)
+  rating      Decimal  @default(0) @db.Decimal(3, 2)
+  numReviews  Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  banner      String?
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  ProductVariant ProductVariant[]
+  orderItem      OrderItem[]
+  review         Review[]
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+}
+
+model ProductVariant {
+  id              String      @id @default(cuid())
+  productId       String
+  type            VariantType
+  value           String
+  price           Decimal
+  discountPercent Decimal?    @default(0) @db.Decimal(5, 2) // Discount percentage (0-100)
+  stock           Int         @default(0)
+  status          Status      @default(ACTIVE)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  Product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, type, value]) // Ensure unique variant per product
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  DISCONTINUED
+}
+
+enum VariantType {
+  WEIGHT
+  VOLUME
+  SIZE
+}
+
+// How to Calculate Final Price in Queries
+// const products = await prisma.product.findMany({
+//   select: {
+//     name: true,
+//     price: true,
+//     discountPercent: true,
+//     finalPrice: {
+//       select: {
+//         discount: { 
+//           resolve: (product) => product.price - (product.price * (product.discountPercent / 100)) 
+//         }
+//       }
+//     }
+//   }
+// });
