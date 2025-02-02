@@ -36,7 +36,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
           <div className="col-span-2 p-5">
             <div className="flex flex-col gap-5">
               <p>
-                {product.brand} {product.category}
+                {product.brand?.name} {product.category?.name}
               </p>
               <h1 className="h3-bold">{product.name}</h1>
               <Rating value={+product.rating} />
@@ -44,7 +44,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <ProductPrice
                   value={Number(product.price)}
-                  classname="w-24 rounded-full bg-green-100 text-green-700 px-5 py-2"
+                  classname="rounded-full bg-green-100 text-green-700 px-5 py-2"
                 />
               </div>
             </div>
@@ -79,7 +79,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
                         productId: product.id,
                         name: product.name,
                         slug: product.slug,
-                        price: product.price,
+                        price: product.price.toString(),
                         quantity: 1,
                         image: product.images[0],
                       }}

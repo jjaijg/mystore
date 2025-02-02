@@ -1,8 +1,8 @@
-import { Product } from "@/types";
+import { TProduct } from "@/types";
 import ProductCard from "./product-card";
 
 type Props = {
-  data: Product[];
+  data: TProduct[];
   title?: string;
   limit?: number;
 };

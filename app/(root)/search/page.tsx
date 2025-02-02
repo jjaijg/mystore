@@ -119,12 +119,12 @@ const SearchPage = async ({ searchParams }: Props) => {
                 </Link>
               </li>
               {categories.map((cat) => (
-                <li key={cat.category}>
+                <li key={cat.name}>
                   <Link
-                    className={`${category === cat.category && "font-bold"}`}
-                    href={getFilterUrl({ c: cat.category })}
+                    className={`${category === cat.name && "font-bold"}`}
+                    href={getFilterUrl({ c: cat.name })}
                   >
-                    {cat.category}
+                    {cat.name}
                   </Link>
                 </li>
               ))}

@@ -10,19 +10,22 @@ import {
   paymentMethodSchema,
   paymentResultSchema,
 } from "@/lib/validationSchema/payment.schema";
-import {
-  insertProductSchema,
-  updateProductSchema,
-} from "@/lib/validationSchema/product.schema";
+import { updateProductSchema } from "@/lib/validationSchema/product.schema";
 import { insertReviewSchema } from "@/lib/validationSchema/review.schema";
 import { shippingAddressSchema } from "@/lib/validationSchema/shippingAddress.schema";
+import { Product } from "@prisma/client";
 
 import { z } from "zod";
 
-export type Product = z.infer<typeof insertProductSchema> & {
-  id: string;
-  rating: string;
-  createdAt: Date;
+export type TProduct = Omit<Product, "price" | "rating"> & {
+  price: number;
+  rating: number;
+  brand: {
+    name: string;
+  } | null;
+  category: {
+    name: string;
+  } | null;
 };
 
 export type UpdateProduct = z.infer<typeof updateProductSchema>;

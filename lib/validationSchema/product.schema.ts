@@ -19,3 +19,5 @@ export const insertProductSchema = z.object({
 export const updateProductSchema = insertProductSchema.extend({
   id: z.string().min(1, "Id is required"),
 });
+
+export type InserProductSchema = z.infer<typeof insertProductSchema>;
