@@ -21,10 +21,10 @@ export type TProduct = Omit<Product, "price" | "rating" | "discountPercent"> & {
   price: number;
   rating: number;
   discountPercent?: number;
-  brand: {
+  brand?: {
     name: string;
   } | null;
-  category: {
+  category?: {
     name: string;
   } | null;
 };

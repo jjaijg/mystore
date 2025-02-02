@@ -7,13 +7,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Product } from "@/types";
+import { TProduct } from "@/types";
 import AutoPlay from "embla-carousel-autoplay";
 import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
-  data: Product[];
+  data: TProduct[];
 };
 const ProductCarousel = ({ data }: Props) => {
   return (
