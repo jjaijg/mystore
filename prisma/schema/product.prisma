@@ -6,6 +6,8 @@ model Brand {
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
   Product Product[]
+
+  @@schema("ssb")
 }
 
 model Category {
@@ -16,6 +18,8 @@ model Category {
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
   Product Product[]
+
+  @@schema("ssb")
 }
 
 model Product {
@@ -43,6 +47,8 @@ model Product {
 
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
+
+  @@schema("ssb")
 }
 
 model ProductVariant {
@@ -59,18 +65,23 @@ model ProductVariant {
   Product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, type, value]) // Ensure unique variant per product
+  @@schema("ssb")
 }
 
 enum Status {
   ACTIVE
   INACTIVE
   DISCONTINUED
+
+  @@schema("ssb")
 }
 
 enum VariantType {
   WEIGHT
   VOLUME
   SIZE
+
+  @@schema("ssb")
 }
 
 // How to Calculate Final Price in Queries
