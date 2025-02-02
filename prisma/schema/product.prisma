@@ -5,7 +5,7 @@ model Brand {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
-  Product Product[]
+  products Product[]
 
   @@schema("ssb")
 }
@@ -17,7 +17,7 @@ model Category {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @updatedAt @db.Timestamp(6)
 
-  Product Product[]
+  products Product[]
 
   @@schema("ssb")
 }
@@ -41,9 +41,9 @@ model Product {
   createdAt   DateTime @default(now()) @db.Timestamp(6)
   updatedAt   DateTime @updatedAt @db.Timestamp(6)
 
-  ProductVariant ProductVariant[]
-  orderItem      OrderItem[]
-  review         Review[]
+  productVariants ProductVariant[]
+  orderItem       OrderItem[]
+  review          Review[]
 
   category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   brand    Brand?    @relation(fields: [brandId], references: [id], onDelete: SetNull)
@@ -62,7 +62,7 @@ model ProductVariant {
   status          Status      @default(ACTIVE)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  Product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product         Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([productId, type, value]) // Ensure unique variant per product
   @@schema("ssb")
