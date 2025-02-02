@@ -17,10 +17,10 @@ import { Product } from "@prisma/client";
 
 import { z } from "zod";
 
-export type TProduct = Omit<Product, "price" | "rating"> & {
+export type TProduct = Omit<Product, "price" | "rating" | "discountPercent"> & {
   price: number;
   rating: number;
-  discountPercent: number;
+  discountPercent?: number;
   brand: {
     name: string;
   } | null;
