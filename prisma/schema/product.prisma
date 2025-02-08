@@ -78,9 +78,9 @@ enum Status {
 }
 
 enum VariantType {
-  WEIGHT
-  VOLUME
-  SIZE
+  weight
+  volume
+  size
 
   @@schema("ssb")
 }
