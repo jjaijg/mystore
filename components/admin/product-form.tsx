@@ -39,7 +39,7 @@ import {
 } from "../ui/select";
 import { useEffect } from "react";
 
-const variantTypes = ["weight", "size", "volumn"];
+const variantTypes = ["weight", "size", "volumne"];
 
 type Props = {
   type: "create" | "update";
@@ -283,87 +283,131 @@ const ProductForm = ({
             </FormItem>
           </div>
 
-          <div className="flex flex-col space-y-2">
-            {/* Variants */}
-            {fields.map((field, idx) => (
-              <div className="flex gap-2" key={field.id}>
-                {/* Variant type */}
-                <FormItem className="w-full">
-                  <FormLabel>Type</FormLabel>
-                  <Select {...form.register(`productVariants.${idx}.type`)}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a variant type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {variantTypes.map((v) => (
-                        <SelectItem key={v} value={v}>
-                          {v.charAt(0) + v.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-                {/* Variant value */}
-                <FormItem className="w-full">
-                  <FormLabel>Value</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...form.register(`productVariants.${idx}.value`)}
-                      placeholder="Enter Variant value"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                {/* Variant price */}
-                <FormItem className="w-full">
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...form.register(`productVariants.${idx}.price`)}
-                      placeholder="Enter Variant price"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                {/* Variant stock */}
-                <FormItem className="w-full">
-                  <FormLabel>Stock</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...form.register(`productVariants.${idx}.stock`)}
-                      placeholder="Enter Variant stock"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-                {/* Delete button */}
-                <Button
-                  onClick={() => remove(idx)}
-                  type="button"
-                  variant={"destructive"}
-                  className="mt-auto"
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <Button
-              onClick={() =>
-                append({
-                  type: "weight",
-                  value: "",
-                  stock: 0,
-                  price: 0,
-                  discountPercent: 0,
-                })
-              }
-              type="button"
-            >
-              Add Variant
-            </Button>
+          <div className="upload-field">
+            Product Variants
+            <Card>
+              <CardContent>
+                <div className="flex flex-col space-y-4">
+                  {/* Variants */}
+                  {fields.map((field, idx) => {
+                    return (
+                      <div className="flex gap-2" key={field.id}>
+                        {/* Variant type */}
+                        <FormField
+                          control={control}
+                          name={`productVariants.${idx}.type`}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Type</FormLabel>
+                              <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select a variant type" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {variantTypes.map((v) => (
+                                    <SelectItem key={v} value={v}>
+                                      {v.charAt(0) + v.slice(1)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* Variant value */}
+                        <FormField
+                          control={control}
+                          name={`productVariants.${idx}.value`}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Value</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Enter Variant value"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* Variant price */}
+                        <FormField
+                          control={control}
+                          name={`productVariants.${idx}.price`}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Price</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Enter Variant price"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* Variant stock */}
+                        <FormField
+                          control={control}
+                          name={`productVariants.${idx}.stock`}
+                          render={({ field }) => (
+                            <FormItem className="w-full">
+                              <FormLabel>Stock</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Enter Variant stock"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        {/* Delete button */}
+                        <Button
+                          onClick={() => remove(idx)}
+                          type="button"
+                          variant={"destructive"}
+                          className="mt-auto"
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    );
+                  })}
+                  <Button
+                    onClick={() =>
+                      append({
+                        type: "weight",
+                        value: "",
+                        stock: 0,
+                        price: 0,
+                        discountPercent: 0,
+                      })
+                    }
+                    type="button"
+                    className="my-2"
+                  >
+                    Add Variant
+                  </Button>
+                  {form.formState.errors["productVariants"] ? (
+                    <p className="text-destructive">
+                      {form.formState.errors["productVariants"].root?.message}
+                    </p>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="upload-field flex flex-col gap-5 md:flex-row">

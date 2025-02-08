@@ -48,6 +48,7 @@ export async function getProductById(id: string) {
     include: {
       category: { select: { name: true, slug: true } },
       brand: { select: { name: true, slug: true } },
+      productVariants: true,
     },
   });
 
@@ -195,11 +196,19 @@ export async function updateProduct(data: UpdateProduct) {
       .map((img) => img.split("/").pop()!); //gets image id
 
     const { productVariants, ...productData } = product;
-    console.log(productVariants);
     await prisma.product.update({
       where: { id: product.id },
       data: productData,
     });
+
+    await prisma.productVariant.deleteMany({
+      where: { productId: product.id },
+    });
+
+    if (productVariants)
+      await prisma.productVariant.createMany({
+        data: productVariants.map((p) => ({ ...p, productId: product.id })),
+      });
 
     // Remove images from uploadthing
     if (imagesToBeRemoved.length) {
