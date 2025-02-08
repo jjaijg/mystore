@@ -159,10 +159,16 @@ export async function deleteProduct(id: string) {
 // Create a product
 export async function createProduct(data: InserProductSchema) {
   try {
-    const product = insertProductSchema.parse(data);
-    await prisma.product.create({
+    const { productVariants, ...product } = insertProductSchema.parse(data);
+    const prod = await prisma.product.create({
       data: product,
     });
+
+    if (productVariants) {
+      await prisma.productVariant.createMany({
+        data: productVariants.map((p) => ({ ...p, productId: prod.id })),
+      });
+    }
 
     revalidatePath(`/admin/products`);
     return { success: true, message: "Product created successfully" };
@@ -188,9 +194,11 @@ export async function updateProduct(data: UpdateProduct) {
       )
       .map((img) => img.split("/").pop()!); //gets image id
 
+    const { productVariants, ...productData } = product;
+    console.log(productVariants);
     await prisma.product.update({
       where: { id: product.id },
-      data: product,
+      data: productData,
     });
 
     // Remove images from uploadthing

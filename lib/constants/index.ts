@@ -48,6 +48,7 @@ export const productDefaults = {
   isFeatured: false,
   banner: null,
   discountPercent: 0,
+  productVariants: [],
 };
 
 export const reviewFormDefaults = {
